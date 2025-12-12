@@ -30,13 +30,13 @@ export default function LandingPage() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Link
-              href="/register"
+              href="/auth/register"
               className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl"
             >
               Mulai Sekarang
             </Link>
             <Link
-              href="/login"
+              href="/auth/login"
               className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-semibold hover:bg-gray-50 transition shadow-lg border-2 border-indigo-600"
             >
               Masuk
