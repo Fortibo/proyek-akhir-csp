@@ -240,12 +240,14 @@ export default function TasksPage() {
   const isAdmin = user?.role === "admin";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tasks</h1>
-          <p className="text-gray-600 mt-1">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Tasks
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1 truncate">
             {showMyTasks
               ? "Tasks yang ditugaskan ke saya"
               : "Semua tasks di grup"}
@@ -254,89 +256,92 @@ export default function TasksPage() {
         {isAdmin && (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition whitespace-nowrap"
           >
-            <Plus className="w-5 h-5" />
-            Buat Task Baru
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Buat Task Baru</span>
+            <span className="sm:hidden">Buat</span>
           </button>
         )}
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4">
+        <div className="space-y-3 sm:space-y-4">
           {/* Search */}
-          <div className="flex-1">
+          <div className="w-full">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Cari task..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-9 sm:pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
           </div>
 
-          {/* Status Filter */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setStatusFilter("all")}
-              className={cn(
-                "px-4 py-2 rounded-lg font-medium transition",
-                statusFilter === "all"
-                  ? "bg-indigo-100 text-indigo-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              )}
-            >
-              Semua
-            </button>
-            <button
-              onClick={() => setStatusFilter("pending")}
-              className={cn(
-                "px-4 py-2 rounded-lg font-medium transition",
-                statusFilter === "pending"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              )}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setStatusFilter("completed")}
-              className={cn(
-                "px-4 py-2 rounded-lg font-medium transition",
-                statusFilter === "completed"
-                  ? "bg-blue-100 text-blue-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              )}
-            >
-              Completed
-            </button>
-            <button
-              onClick={() => setStatusFilter("verified")}
-              className={cn(
-                "px-4 py-2 rounded-lg font-medium transition",
-                statusFilter === "verified"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              )}
-            >
-              Verified
-            </button>
+          {/* Status Filter - Scrollable on mobile */}
+          <div className="overflow-x-auto -mx-3 sm:-mx-4 px-3 sm:px-4">
+            <div className="flex gap-1.5 sm:gap-2 whitespace-nowrap">
+              <button
+                onClick={() => setStatusFilter("all")}
+                className={cn(
+                  "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium transition text-xs sm:text-sm",
+                  statusFilter === "all"
+                    ? "bg-indigo-100 text-indigo-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                )}
+              >
+                Semua
+              </button>
+              <button
+                onClick={() => setStatusFilter("pending")}
+                className={cn(
+                  "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium transition text-xs sm:text-sm",
+                  statusFilter === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                )}
+              >
+                Pending
+              </button>
+              <button
+                onClick={() => setStatusFilter("completed")}
+                className={cn(
+                  "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium transition text-xs sm:text-sm",
+                  statusFilter === "completed"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                )}
+              >
+                Completed
+              </button>
+              <button
+                onClick={() => setStatusFilter("verified")}
+                className={cn(
+                  "px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium transition text-xs sm:text-sm",
+                  statusFilter === "verified"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                )}
+              >
+                Verified
+              </button>
+            </div>
           </div>
 
           {/* My Tasks Toggle */}
           {isAdmin && (
-            <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition">
+            <label className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition w-fit">
               <input
                 type="checkbox"
                 checked={showMyTasks}
                 onChange={(e) => setShowMyTasks(e.target.checked)}
                 className="w-4 h-4 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-xs sm:text-sm font-medium text-gray-700">
                 My Tasks Only
               </span>
             </label>
@@ -371,18 +376,18 @@ export default function TasksPage() {
             return (
               <div
                 key={task.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                   {/* Task Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 break-words">
                         {task.title}
                       </h3>
                       <span
                         className={cn(
-                          "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+                          "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap",
                           task.status === "verified" &&
                             "bg-green-100 text-green-800",
                           task.status === "completed" &&
@@ -400,17 +405,21 @@ export default function TasksPage() {
                     </div>
 
                     {task.description && (
-                      <p className="text-gray-600 mb-3">{task.description}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 line-clamp-2">
+                        {task.description}
+                      </p>
                     )}
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-4 text-xs sm:text-sm text-gray-500">
                       <span className="flex items-center gap-1">
-                        <User className="w-4 h-4" />
-                        {task.assigned_user?.full_name || "Unassigned"}
+                        <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="truncate">
+                          {task.assigned_user?.full_name || "Unassigned"}
+                        </span>
                       </span>
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(task.deadline)}
+                        <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span>{formatDate(task.deadline)}</span>
                       </span>
                       {isOverdue && (
                         <span className="text-red-600 font-medium">
@@ -428,36 +437,38 @@ export default function TasksPage() {
                         )}
                     </div>
 
-                    {/* Proof Image */}
+                    {/* Proof Image - Responsive size */}
                     {task.proof_image_url && (
-                      <div className="mt-3">
+                      <div className="mt-2 sm:mt-3">
                         <img
                           src={task.proof_image_url}
                           alt="Task proof"
-                          className="max-w-xs rounded-lg border border-gray-200"
+                          className="max-w-xs sm:max-w-sm rounded-lg border border-gray-200"
                         />
                       </div>
                     )}
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5 sm:gap-2 min-w-max">
                     {/* Member Actions */}
                     {isMyTask && task.status === "pending" && (
                       <>
                         <button
                           onClick={() => setUploadingProof(task.id)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"
+                          className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition whitespace-nowrap"
                         >
-                          <Upload className="w-4 h-4" />
-                          Upload Bukti
+                          <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">Upload Bukti</span>
+                          <span className="sm:hidden">Upload</span>
                         </button>
                         <button
                           onClick={() => handleMarkComplete(task.id)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition"
+                          className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition whitespace-nowrap"
                         >
-                          <CheckCircle className="w-4 h-4" />
-                          Selesai
+                          <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">Selesai</span>
+                          <span className="sm:hidden">Done</span>
                         </button>
                       </>
                     )}
@@ -468,25 +479,28 @@ export default function TasksPage() {
                         {task.status === "completed" && (
                           <button
                             onClick={() => handleVerifyTask(task.id)}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition"
+                            className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition whitespace-nowrap"
                           >
-                            <CheckCircle className="w-4 h-4" />
-                            Verify
+                            <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">Verify</span>
+                            <span className="sm:hidden">OK</span>
                           </button>
                         )}
                         <button
                           onClick={() => setEditingTask(task)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition"
+                          className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition"
                         >
-                          <Edit className="w-4 h-4" />
-                          Edit
+                          <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">Edit</span>
+                          <span className="sm:hidden">✎</span>
                         </button>
                         <button
                           onClick={() => handleDeleteTask(task.id)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
+                          className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
                         >
-                          <Trash2 className="w-4 h-4" />
-                          Delete
+                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">Delete</span>
+                          <span className="sm:hidden">✕</span>
                         </button>
                       </>
                     )}
@@ -516,8 +530,8 @@ export default function TasksPage() {
 
       {/* Task Requests Section (Admin Only) */}
       {isAdmin && (
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
             Task Requests
           </h2>
 
@@ -526,68 +540,77 @@ export default function TasksPage() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
             </div>
           ) : taskRequests.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-              <CheckCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600">No pending requests</p>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8 text-center">
+              <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-2 sm:mb-3" />
+              <p className="text-sm sm:text-base text-gray-600">
+                No pending requests
+              </p>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {taskRequests.map((request) => (
                 <div
                   key={request.id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 break-words">
                           {request.title}
                         </h3>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 whitespace-nowrap">
                           Pending
                         </span>
                       </div>
 
                       {request.description && (
-                        <p className="text-gray-600 mb-3">
+                        <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2">
                           {request.description}
                         </p>
                       )}
                       {request.deadline && (
-                        <p className="text-gray-600 mb-3">
-                          Member Proposed Deadline:{" "}
+                        <p className="text-xs sm:text-sm text-gray-600 mb-1.5">
+                          <span className="font-medium">
+                            Proposed Deadline:
+                          </span>{" "}
                           {new Date(request.deadline).toLocaleDateString()}
                         </p>
                       )}
                       {request.assigned_to && (
-                        <p className="text-gray-600 mb-3">
-                          Member Proposed Assignee:{" "}
+                        <p className="text-xs sm:text-sm text-gray-600 mb-1.5">
+                          <span className="font-medium">
+                            Proposed Assignee:
+                          </span>{" "}
                           {membersMap[request.assigned_to] ??
                             request.assigned_to}
                         </p>
                       )}
                       {request.status === "rejected" &&
                         request.rejection_reason && (
-                          <p className="text-red-600 mb-3">
-                            Reason: {request.rejection_reason}
+                          <p className="text-xs sm:text-sm text-red-600 mb-1.5">
+                            <span className="font-medium">Reason:</span>{" "}
+                            {request.rejection_reason}
                           </p>
                         )}
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 sm:gap-2 min-w-max">
                       <button
                         onClick={() => handleApproveRequest(request.id)}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition"
+                        className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition whitespace-nowrap"
                       >
-                        <Check className="w-4 h-4" />
-                        Approve
+                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="hidden sm:inline">Approve</span>
+                        <span className="sm:hidden">✓</span>
                       </button>
                       <button
                         onClick={() => handleRejectRequest(request.id)}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
+                        className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition whitespace-nowrap"
                       >
-                        <X className="w-4 h-4" />
-                        Reject
+                        <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="hidden sm:inline">Reject</span>
+                        <span className="sm:hidden">✕</span>
                       </button>
                     </div>
                   </div>
@@ -600,12 +623,12 @@ export default function TasksPage() {
 
       {/* Request Task Button (Members Only) */}
       {!isAdmin && (
-        <div className="mt-8 flex justify-center">
+        <div className="mt-6 sm:mt-8 flex justify-center">
           <button
             onClick={() => setShowRequestModal(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition font-medium"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             Request New Task
           </button>
         </div>
@@ -708,17 +731,17 @@ function TaskFormModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
       <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
+        <div className="p-4 sm:p-6 border-b border-gray-200 sticky top-0 bg-white">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
             {task ? "Edit Task" : "Buat Task Baru"}
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Judul Task
             </label>
             <input
@@ -728,13 +751,13 @@ function TaskFormModal({
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Contoh: Cuci piring"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Deskripsi (opsional)
             </label>
             <textarea
@@ -743,13 +766,13 @@ function TaskFormModal({
                 setFormData({ ...formData, description: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Detail task..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Ditugaskan ke
             </label>
             <select
@@ -758,7 +781,7 @@ function TaskFormModal({
               onChange={(e) =>
                 setFormData({ ...formData, assigned_to: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             >
               <option value="">Pilih member...</option>
               {members.map((member) => (
@@ -770,7 +793,7 @@ function TaskFormModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Deadline
             </label>
             <input
@@ -780,22 +803,22 @@ function TaskFormModal({
               onChange={(e) =>
                 setFormData({ ...formData, deadline: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 sm:gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 px-4 py-2 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+              className="flex-1 px-4 py-2 text-xs sm:text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
             >
               {loading ? "Menyimpan..." : task ? "Update" : "Buat Task"}
             </button>
@@ -878,28 +901,32 @@ function UploadProofModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Upload Bukti</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-4 sm:p-6 border-b border-gray-200 sticky top-0 bg-white">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+            Upload Bukti
+          </h2>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Pilih Foto
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              className="w-full text-xs sm:text-sm text-gray-500 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2.5 sm:file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
             />
           </div>
 
           {preview && (
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                Preview:
+              </p>
               <img
                 src={preview}
                 alt="Preview"
@@ -908,18 +935,18 @@ function UploadProofModal({
             </div>
           )}
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 sm:gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 px-4 py-2 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
             >
               Batal
             </button>
             <button
               onClick={handleUpload}
               disabled={!file || uploading}
-              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+              className="flex-1 px-4 py-2 text-xs sm:text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
             >
               {uploading ? "Uploading..." : "Upload"}
             </button>
@@ -995,15 +1022,17 @@ function RequestTaskModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-lg w-full">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Request New Task</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-4 sm:p-6 border-b border-gray-200 sticky top-0 bg-white">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+            Request New Task
+          </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Task Title
             </label>
             <input
@@ -1013,13 +1042,13 @@ function RequestTaskModal({
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Contoh: Bersihkan ruang tamu"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Description (optional)
             </label>
             <textarea
@@ -1028,13 +1057,13 @@ function RequestTaskModal({
                 setFormData({ ...formData, description: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Detail task yang diminta..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Assign To (optional)
             </label>
             <select
@@ -1042,7 +1071,7 @@ function RequestTaskModal({
               onChange={(e) =>
                 setFormData({ ...formData, assigned_to: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             >
               <option value="">Unassigned</option>
               {members.map((m) => (
@@ -1054,7 +1083,7 @@ function RequestTaskModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Deadline (optional)
             </label>
             <input
@@ -1063,22 +1092,22 @@ function RequestTaskModal({
               onChange={(e) =>
                 setFormData({ ...formData, deadline: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 sm:gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 px-4 py-2 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+              className="flex-1 px-4 py-2 text-xs sm:text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
             >
               {loading ? "Sending..." : "Send Request"}
             </button>

@@ -49,13 +49,13 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6">
       {/* Profile Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 md:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-4">
           {/* Avatar */}
-          <div className="relative">
-            <div className="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
+          <div className="relative mx-auto sm:mx-0">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0">
               {user.avatar_url ? (
                 <img
                   src={user.avatar_url}
@@ -63,37 +63,37 @@ export default function ProfilePage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-indigo-600 font-bold text-4xl">
+                <span className="text-indigo-600 font-bold text-3xl sm:text-4xl md:text-5xl">
                   {getInitials(user.full_name)}
                 </span>
               )}
             </div>
             <button
               onClick={() => setShowEditModal(true)}
-              className="absolute bottom-0 right-0 p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition shadow-lg"
+              className="absolute bottom-0 right-0 p-1.5 sm:p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition shadow-lg"
             >
-              <Camera className="w-4 h-4" />
+              <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
             </button>
           </div>
 
           {/* User Info */}
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="flex-1 text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               {user.full_name}
             </h1>
-            <div className="space-y-2">
-              <div className="flex items-center justify-center md:justify-start gap-2 text-gray-600">
-                <Mail className="w-4 h-4" />
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-gray-600 justify-center sm:justify-start">
+                <Mail className="w-4 h-4 hidden sm:block" />
                 <span>{user.email}</span>
               </div>
-              <div className="flex items-center justify-center md:justify-start gap-2 text-gray-600">
-                <Calendar className="w-4 h-4" />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-gray-600 justify-center sm:justify-start">
+                <Calendar className="w-4 h-4 hidden sm:block" />
                 <span>Bergabung {formatDate(user.created_at)}</span>
               </div>
-              <div className="flex items-center justify-center md:justify-start gap-2">
-                <Shield className="w-4 h-4" />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 justify-center sm:justify-start">
+                <Shield className="w-4 h-4 hidden sm:block" />
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  className={`px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                     user.role === "admin"
                       ? "bg-purple-100 text-purple-800"
                       : "bg-blue-100 text-blue-800"
@@ -105,20 +105,20 @@ export default function ProfilePage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-6 justify-center md:justify-start">
+            <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6 justify-center sm:justify-start flex-wrap">
               <button
                 onClick={() => setShowEditModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition"
               >
                 <Edit className="w-4 h-4" />
-                Edit Profile
+                <span>Edit Profile</span>
               </button>
               <button
                 onClick={() => setShowPasswordModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition"
               >
                 <Lock className="w-4 h-4" />
-                Change Password
+                <span>Change Password</span>
               </button>
             </div>
           </div>
@@ -126,29 +126,33 @@ export default function ProfilePage() {
       </div>
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="text-center">
-            <p className="text-sm font-medium text-gray-600 mb-2">
+            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
               Total Tasks
             </p>
-            <p className="text-4xl font-bold text-gray-900">
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
               {stats.total_tasks}
             </p>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="text-center">
-            <p className="text-sm font-medium text-gray-600 mb-2">Completed</p>
-            <p className="text-4xl font-bold text-blue-600">
+            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
+              Completed
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-blue-600">
               {stats.completed_tasks}
             </p>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="text-center">
-            <p className="text-sm font-medium text-gray-600 mb-2">Verified</p>
-            <p className="text-4xl font-bold text-green-600">
+            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
+              Verified
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-green-600">
               {stats.verified_tasks}
             </p>
           </div>
@@ -253,9 +257,9 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-        <div className="p-6 border-b border-gray-200">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-xl font-bold text-gray-900">Edit Profile</h2>
         </div>
 
@@ -266,7 +270,7 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
         >
           {/* Avatar */}
           <div className="flex flex-col items-center">
-            <div className="w-24 h-24 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden mb-4">
+            <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden mb-4">
               {avatarPreview ? (
                 <img
                   src={avatarPreview}
@@ -280,7 +284,7 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
               )}
             </div>
             <label className="cursor-pointer">
-              <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition">
                 <Camera className="w-4 h-4" />
                 Change Avatar
               </span>
@@ -305,7 +309,7 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
               onChange={(e) =>
                 setFormData({ ...formData, full_name: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
@@ -318,7 +322,7 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
               type="email"
               value={user.email}
               disabled
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
             />
             <p className="text-xs text-gray-500 mt-1">
               Email tidak dapat diubah
@@ -329,14 +333,14 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -405,9 +409,9 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-        <div className="p-6 border-b border-gray-200">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-xl font-bold text-gray-900">Change Password</h2>
         </div>
 
@@ -423,7 +427,7 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
               onChange={(e) =>
                 setFormData({ ...formData, current_password: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
@@ -438,7 +442,7 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
               onChange={(e) =>
                 setFormData({ ...formData, new_password: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
@@ -453,7 +457,7 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
               onChange={(e) =>
                 setFormData({ ...formData, confirm_password: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
@@ -461,14 +465,14 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+              className="flex-1 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
             >
               {loading ? "Menyimpan..." : "Update Password"}
             </button>

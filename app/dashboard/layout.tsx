@@ -183,36 +183,36 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top navbar */}
-        <header className="sticky top-0 z-10 bg-white border-b border-gray-200 h-16 flex items-center px-4 lg:px-8">
+        <header className="sticky top-0 z-10 bg-white border-b border-gray-200 h-14 sm:h-16 flex items-center px-3 sm:px-4 lg:px-8">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-gray-500 hover:text-gray-700 mr-4"
+            className="lg:hidden text-gray-500 hover:text-gray-700 mr-3"
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
-          <div className="flex-1">
-            <h1 className="text-xl font-semibold text-gray-900">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
               {navigation.find((item) => item.href === pathname)?.name ||
                 "Dashboard"}
             </h1>
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard/profile"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
                 {user.avatar_url ? (
                   <img
                     src={user.avatar_url}
                     alt={user.full_name}
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
                   />
                 ) : (
-                  <span className="text-indigo-600 font-semibold text-sm">
+                  <span className="text-indigo-600 font-semibold text-xs sm:text-sm">
                     {getInitials(user.full_name)}
                   </span>
                 )}
@@ -222,7 +222,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <main className="p-4 lg:p-8">{children}</main>
+        <main className="p-3 sm:p-4 md:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

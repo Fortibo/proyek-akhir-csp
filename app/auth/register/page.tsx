@@ -68,21 +68,25 @@ export default function SignUpPage() {
     }
   }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-3 sm:px-4 py-4 sm:py-8">
+      <div className="w-full max-w-sm">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-indigo-600 p-3 rounded-2xl">
-              <Home className="w-8 h-8 text-white" />
+            <div className="bg-indigo-600 p-2.5 sm:p-3 rounded-2xl">
+              <Home className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">HomeChore</h1>
-          <p className="text-gray-600 mt-2">Buat akun baru</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            HomeChore
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-2">
+            Buat akun baru
+          </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           {/* Action Toggle */}
           <div className="flex gap-2 p-1 bg-gray-100 rounded-lg mb-6">
             <button
