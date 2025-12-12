@@ -4,6 +4,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { UserPlus, Trash2 } from "lucide-react";
+import InviteModal from "./InviteModal";
 
 interface Member {
   id: string;
@@ -59,16 +60,26 @@ export default function MembersPage() {
   }
 
   const isAdmin = user?.role === "admin";
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold text-gray-900">Members</h2>
         {isAdmin && (
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-700 transition">
-            <UserPlus className="w-5 h-5" />
-            Invite Member
-          </button>
+          <>
+            <button
+              onClick={() => setInviteOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-700 transition"
+            >
+              <UserPlus className="w-5 h-5" />
+              Invite Member
+            </button>
+            <InviteModal
+              open={inviteOpen}
+              onClose={() => setInviteOpen(false)}
+            />
+          </>
         )}
       </div>
 

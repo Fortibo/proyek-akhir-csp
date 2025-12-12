@@ -5,8 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { group } from "console";
 import { Home, Loader2, Lock, Mail, Ticket, User, Users } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Action = "create" | "join";
 
@@ -24,9 +24,65 @@ export default function SignUpPage() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [inviteStatus, setInviteStatus] = useState<
+    "idle" | "loading" | "valid" | "invalid"
+  >("idle");
+  const [inviteReason, setInviteReason] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const code = searchParams?.get("invite");
+    if (code) {
+      const up = code.toUpperCase();
+      setAction("join");
+      setFormData((prev) => ({ ...prev, invite_code: up }));
+      // trigger validation (will map to legacy house_group_invite_code if needed)
+      validateInviteCode(up);
+    }
+  }, [searchParams]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const value =
+      e.target.name === "invite_code"
+        ? e.target.value.toUpperCase()
+        : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value });
+    if (e.target.name === "invite_code") {
+      setInviteStatus("idle");
+      setInviteReason(null);
+    }
+  }
+
+  async function validateInviteCode(code: string) {
+    if (!code) return setInviteStatus("idle");
+    setInviteStatus("loading");
+    try {
+      const res = await fetch(
+        `/api/invites/validate?code=${encodeURIComponent(code)}`
+      );
+      const json = await res.json();
+      if (res.ok && json.valid) {
+        setInviteStatus("valid");
+        setInviteReason(null);
+        // if API returned the legacy house_group_invite_code, replace the input so the existing register handler can accept it
+        if (json.data?.house_group_invite_code) {
+          setFormData((prev) => ({
+            ...prev,
+            invite_code: (
+              json.data.house_group_invite_code || ""
+            ).toUpperCase(),
+          }));
+        }
+        return true;
+      }
+      setInviteStatus("invalid");
+      setInviteReason(json.reason || json.error || "invalid code");
+      return false;
+    } catch (err) {
+      setInviteStatus("invalid");
+      setInviteReason("network_error");
+      return false;
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -50,6 +106,14 @@ export default function SignUpPage() {
     if (action === "join" && !formData.invite_code) {
       setError("Kode Undangan harus diisi");
       return;
+    }
+    // Ensure invite is valid before submitting
+    if (action === "join") {
+      const valid = await validateInviteCode(formData.invite_code);
+      if (!valid) {
+        setError("Kode Undangan tidak valid");
+        return;
+      }
     }
     setLoading(true);
 
@@ -190,12 +254,28 @@ export default function SignUpPage() {
                     type="text"
                     value={formData.invite_code}
                     onChange={handleChange}
+                    onBlur={() => validateInviteCode(formData.invite_code)}
                     required={action === "join"}
                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent uppercase"
                     placeholder="HC84X9P2"
                     maxLength={8}
                   />
                 </div>
+                {inviteStatus === "loading" && (
+                  <p className="text-sm text-gray-500 mt-2">
+                    Memeriksa kode...
+                  </p>
+                )}
+                {inviteStatus === "valid" && (
+                  <p className="text-sm text-emerald-600 mt-2">
+                    Kode undangan valid — Anda akan bergabung ke grup.
+                  </p>
+                )}
+                {inviteStatus === "invalid" && (
+                  <p className="text-sm text-red-600 mt-2">
+                    Kode tidak valid{inviteReason ? `: ${inviteReason}` : ""}
+                  </p>
+                )}
               </div>
             )}
 
