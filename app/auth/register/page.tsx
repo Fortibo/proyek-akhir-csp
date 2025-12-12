@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { group } from "console";
 import { Home, Loader2, Lock, Mail, Ticket, User, Users } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Action = "create" | "join";
@@ -28,18 +28,22 @@ export default function SignUpPage() {
     "idle" | "loading" | "valid" | "invalid"
   >("idle");
   const [inviteReason, setInviteReason] = useState<string | null>(null);
-  const searchParams = useSearchParams();
-
   useEffect(() => {
-    const code = searchParams?.get("invite");
-    if (code) {
-      const up = code.toUpperCase();
-      setAction("join");
-      setFormData((prev) => ({ ...prev, invite_code: up }));
-      // trigger validation (will map to legacy house_group_invite_code if needed)
-      validateInviteCode(up);
+    // read query param on client side to avoid CSR bailout from useSearchParams
+    try {
+      if (typeof window === "undefined") return;
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("invite");
+      if (code) {
+        const up = code.toUpperCase();
+        setAction("join");
+        setFormData((prev) => ({ ...prev, invite_code: up }));
+        validateInviteCode(up);
+      }
+    } catch (e) {
+      // ignore
     }
-  }, [searchParams]);
+  }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value =
