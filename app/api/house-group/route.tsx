@@ -2,6 +2,123 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const token = request.cookies.get("sb-access-token")?.value;
+
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, error: "Invalid token" },
+        { status: 401 }
+      );
+    }
+
+    // Get user data
+    const { data: userData, error: userError } = await supabaseAdmin
+      .from("users")
+      .select("house_group_id, role")
+      .eq("id", user.id)
+      .single();
+
+    if (userError || !userData?.house_group_id) {
+      return NextResponse.json(
+        { success: false, error: "User not in a house group" },
+        { status: 404 }
+      );
+    }
+
+    // Check if admin
+    if (userData.role !== "admin") {
+      return NextResponse.json(
+        { success: false, error: "Only admins can delete house group" },
+        { status: 403 }
+      );
+    }
+
+    // Count members
+    const { count: memberCount } = await supabaseAdmin
+      .from("users")
+      .select("*", { count: "exact", head: true })
+      .eq("house_group_id", userData.house_group_id);
+
+    if (memberCount && memberCount > 1) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Cannot delete house group with multiple members. Remove all members first.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Delete all related data
+    await supabaseAdmin
+      .from("task_requests")
+      .delete()
+      .eq("house_group_id", userData.house_group_id);
+
+    await supabaseAdmin
+      .from("tasks")
+      .delete()
+      .eq("house_group_id", userData.house_group_id);
+
+    await supabaseAdmin
+      .from("invites")
+      .delete()
+      .eq("house_group_id", userData.house_group_id);
+
+    // Delete house group
+    const { error: deleteError } = await supabaseAdmin
+      .from("house_groups")
+      .delete()
+      .eq("id", userData.house_group_id);
+
+    if (deleteError) {
+      return NextResponse.json(
+        { success: false, error: "Failed to delete house group" },
+        { status: 500 }
+      );
+    }
+
+    // Update user to remove house_group_id
+    const { error: updateError } = await supabaseAdmin
+      .from("users")
+      .update({ house_group_id: null, role: "member" })
+      .eq("id", user.id);
+
+    if (updateError) {
+      console.error(
+        "Failed to update user after deleting house group:",
+        updateError
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "House group deleted successfully",
+    });
+  } catch (error: any) {
+    console.error("Delete house group error:", error);
+    return NextResponse.json(
+      { success: false, error: "Server error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get("sb-access-token")?.value;

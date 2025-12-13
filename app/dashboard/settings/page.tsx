@@ -19,6 +19,12 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+  const [showLeaveGroup, setShowLeaveGroup] = useState(false);
+  const [showJoinGroup, setShowJoinGroup] = useState(false);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [inviteCode, setInviteCode] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchGroupData();
@@ -178,6 +184,293 @@ export default function SettingsPage() {
           </p>
         )}
       </div>
+
+      {/* House Group Actions */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          House Group Actions
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Manage your house group membership
+        </p>
+
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => setShowLeaveGroup(true)}
+            className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
+          >
+            Leave House Group
+          </button>
+
+          <button
+            onClick={() => setShowJoinGroup(true)}
+            className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"
+          >
+            Join Another Group
+          </button>
+
+          <button
+            onClick={() => setShowCreateGroup(true)}
+            className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition"
+          >
+            Create New Group
+          </button>
+
+          {isAdmin && (
+            <button
+              onClick={async () => {
+                if (
+                  !confirm(
+                    "Are you sure you want to delete this house group? This action cannot be undone."
+                  )
+                ) {
+                  return;
+                }
+
+                setActionLoading(true);
+                try {
+                  const res = await fetch("/api/house-group", {
+                    method: "DELETE",
+                  });
+
+                  const data = await res.json();
+
+                  if (data.success) {
+                    alert("House group deleted successfully");
+                    window.location.reload();
+                  } else {
+                    alert(data.error || "Failed to delete house group");
+                  }
+                } catch (error) {
+                  console.error("Error deleting house group:", error);
+                  alert("An error occurred");
+                } finally {
+                  setActionLoading(false);
+                }
+              }}
+              disabled={actionLoading}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+            >
+              {actionLoading ? "Deleting..." : "Delete House Group"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Leave Group Modal */}
+      {showLeaveGroup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Leave House Group
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you sure you want to leave this house group? You will lose
+              access to all tasks and data.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLeaveGroup(false)}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  setActionLoading(true);
+                  try {
+                    const res = await fetch("/api/user", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ action: "leave_house_group" }),
+                    });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                      alert("Successfully left house group");
+                      window.location.reload();
+                    } else {
+                      alert(data.error || "Failed to leave house group");
+                    }
+                  } catch (error) {
+                    console.error("Error leaving house group:", error);
+                    alert("An error occurred");
+                  } finally {
+                    setActionLoading(false);
+                    setShowLeaveGroup(false);
+                  }
+                }}
+                disabled={actionLoading}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+              >
+                {actionLoading ? "Leaving..." : "Leave Group"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Join Group Modal */}
+      {showJoinGroup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Join Another House Group
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Enter the invite code to join another house group. You will leave
+              your current group.
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Invite Code
+              </label>
+              <input
+                type="text"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                placeholder="Enter invite code"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowJoinGroup(false);
+                  setInviteCode("");
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (!inviteCode.trim()) {
+                    alert("Please enter an invite code");
+                    return;
+                  }
+
+                  setActionLoading(true);
+                  try {
+                    const res = await fetch("/api/user", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        action: "join_house_group",
+                        invite_code: inviteCode,
+                      }),
+                    });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                      alert("Successfully joined new house group");
+                      window.location.reload();
+                    } else {
+                      alert(data.error || "Failed to join house group");
+                    }
+                  } catch (error) {
+                    console.error("Error joining house group:", error);
+                    alert("An error occurred");
+                  } finally {
+                    setActionLoading(false);
+                    setShowJoinGroup(false);
+                    setInviteCode("");
+                  }
+                }}
+                disabled={actionLoading}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {actionLoading ? "Joining..." : "Join Group"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Group Modal */}
+      {showCreateGroup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Create New House Group
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Create a new house group. You will leave your current group and
+              become the admin of the new one.
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Group Name
+              </label>
+              <input
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                placeholder="Enter group name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowCreateGroup(false);
+                  setGroupName("");
+                }}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (!groupName.trim()) {
+                    alert("Please enter a group name");
+                    return;
+                  }
+
+                  setActionLoading(true);
+                  try {
+                    const res = await fetch("/api/user", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        action: "create_house_group",
+                        group_name: groupName,
+                      }),
+                    });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                      alert("Successfully created new house group");
+                      window.location.reload();
+                    } else {
+                      alert(data.error || "Failed to create house group");
+                    }
+                  } catch (error) {
+                    console.error("Error creating house group:", error);
+                    alert("An error occurred");
+                  } finally {
+                    setActionLoading(false);
+                    setShowCreateGroup(false);
+                    setGroupName("");
+                  }
+                }}
+                disabled={actionLoading}
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+              >
+                {actionLoading ? "Creating..." : "Create Group"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* How to Invite */}
       <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">

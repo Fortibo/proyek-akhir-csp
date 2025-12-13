@@ -3,7 +3,7 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { UserPlus, Trash2 } from "lucide-react";
+import { UserPlus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import InviteModal from "./InviteModal";
 
 interface Member {
@@ -55,6 +55,58 @@ export default function MembersPage() {
       }
     } catch (error) {
       console.error("Error removing member:", error);
+      alert("Terjadi kesalahan");
+    }
+  }
+
+  async function handlePromoteMember(memberId: string) {
+    if (!confirm("Yakin ingin promote member ini menjadi admin?")) return;
+
+    try {
+      const res = await fetch(`/api/members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "promote" }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setMembers(
+          members.map((m) => (m.id === memberId ? { ...m, role: "admin" } : m))
+        );
+        alert("Member berhasil dipromote menjadi admin");
+      } else {
+        alert(data.error || "Gagal promote member");
+      }
+    } catch (error) {
+      console.error("Error promoting member:", error);
+      alert("Terjadi kesalahan");
+    }
+  }
+
+  async function handleDemoteMember(memberId: string) {
+    if (!confirm("Yakin ingin demote admin ini menjadi member?")) return;
+
+    try {
+      const res = await fetch(`/api/members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "demote" }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setMembers(
+          members.map((m) => (m.id === memberId ? { ...m, role: "member" } : m))
+        );
+        alert("Admin berhasil didemote menjadi member");
+      } else {
+        alert(data.error || "Gagal demote admin");
+      }
+    } catch (error) {
+      console.error("Error demoting member:", error);
       alert("Terjadi kesalahan");
     }
   }
@@ -133,13 +185,32 @@ export default function MembersPage() {
                   {isAdmin && (
                     <td className="px-4 py-3 text-right">
                       {m.id !== user?.id && (
-                        <button
-                          onClick={() => handleRemoveMember(m.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Remove
-                        </button>
+                        <div className="flex gap-2 justify-end">
+                          {m.role === "member" ? (
+                            <button
+                              onClick={() => handlePromoteMember(m.id)}
+                              className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition"
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                              Promote
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleDemoteMember(m.id)}
+                              className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition"
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                              Demote
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleRemoveMember(m.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Remove
+                          </button>
+                        </div>
                       )}
                     </td>
                   )}
