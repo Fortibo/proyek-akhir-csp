@@ -2,6 +2,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
+
 import { useState, useEffect } from "react";
 import {
   User,
@@ -14,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { formatDate, getInitials } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
@@ -360,6 +362,7 @@ function EditProfileModal({ user, onClose, onSuccess }: any) {
 
 // Change Password Modal
 function ChangePasswordModal({ onClose, onSuccess }: any) {
+  const { logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     current_password: "",
@@ -397,6 +400,7 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
       if (data.success) {
         alert("Password berhasil diubah");
         onSuccess();
+        await logout();
       } else {
         alert(data.error || "Gagal ubah password");
       }
@@ -413,6 +417,10 @@ function ChangePasswordModal({ onClose, onSuccess }: any) {
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-xl font-bold text-gray-900">Change Password</h2>
+          <p className="text-xs text-red-500">
+            {" "}
+            Setelah ubah password anda harus login kembali{" "}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">

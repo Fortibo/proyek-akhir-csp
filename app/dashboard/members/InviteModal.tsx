@@ -20,6 +20,7 @@ export default function InviteModal({
   open: boolean;
   onClose: () => void;
 }) {
+  const [isCopied, setCopied] = useState(false);
   const [invites, setInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -139,10 +140,16 @@ export default function InviteModal({
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => copyLink(inv.link, inv.code)}
+                    onClick={() => {
+                      copyLink(inv.link, inv.code);
+                      setCopied(true);
+                      setTimeout(() => {
+                        setCopied(false);
+                      }, 2000);
+                    }}
                     className="inline-flex items-center gap-2 text-sm text-indigo-600"
                   >
-                    <Copy className="w-4 h-4" /> Copy
+                    <Copy className="w-4 h-4" /> {isCopied ? "Copied" : "Copy"}
                   </button>
                 </div>
               </div>
